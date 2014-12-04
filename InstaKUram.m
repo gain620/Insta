@@ -170,8 +170,6 @@ imshow(img2);
 % 리셋 버튼 누르면, 카페베네 음악도 종료
 stop_pl = 1;
 stop (pl); % Stop mp3 playback
-tmpfile = ['temp.wav'];
-delete(tmpfile);
 
 
 % --- Executes on slider movement.
