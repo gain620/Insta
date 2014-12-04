@@ -22,7 +22,7 @@ function varargout = InstaKUram(varargin)
 
 % Edit the above text to modify the response to help InstaKUram
 
-% Last Modified by GUIDE v2.5 04-Dec-2014 23:08:08
+% Last Modified by GUIDE v2.5 05-Dec-2014 01:17:27
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,8 +57,10 @@ function InstaKUram_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for InstaKUram
 handles.output = hObject;
 
-global mosaicCount;
+global mosaicCount imgFlip angle;
 mosaicCount = 1;
+imgFlip = 0;
+angle = 45;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -81,11 +83,12 @@ varargout{1} = handles.output;
 % --- Executes on button press in load image.
 function pushbutton1_Callback(hObject, eventdata, handles)
 % 이미지 로드
-global img img2;
+global img img2 img_RGB;
 loadPath = imgetfile();
 
 img = imread(loadPath);
 img2 = img;
+img_RGB = img;
 axes(handles.axes1);
 imshow(img);
 
@@ -200,24 +203,39 @@ function slider1_KeyPressFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-% --- Executes on button press in pushbutton10.
+% --- Executes on button press in flip filter.
 function pushbutton10_Callback(hObject, eventdata, handles)
-global img;
+global img imgFlip;
 
-img_hor = flipdim(img ,2);           %# horizontal flip
+if mod(imgFlip,4) == 0
+    img_flip = flipdim(img,2);
+end
 
-%I3 = flipdim(I ,1);           %# vertical flip
-%I4 = flipdim(I3,2);    %# horizontal+vertical flip
+if mod(imgFlip,4) == 1
+    img_flip = flipdim(img,1);
+end
+
+if mod(imgFlip,4) == 2
+    img_flip = flipdim(flipdim(img,1),2);
+end
+
+if mod(imgFlip,4) == 3
+    img_flip = img;
+end
+
+imgFlip = imgFlip + 1;
+
 axes(handles.axes1);
-imshow(img_hor);
+imshow(img_flip);
 
 
 % --- Executes on slider movement.
 function slider2_Callback(hObject, eventdata, handles)
-global img;
-img(:,:,1) = img(:,:,1) + get(hObject, 'Value');
+global img_RGB;
+img_red = im2double(img_RGB);
+img_red(:,:,1) = img_red(:,:,1) + get(hObject, 'Value');
 axes(handles.axes1);
-imshow(img);
+imshow(img_red);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -266,3 +284,87 @@ imshow(img_bene);
 
 pl = audioplayer (Y, FS);               % start playback.
 play (pl);
+
+
+% --- Executes on slider movement.
+function slider4_Callback(hObject, eventdata, handles)
+global img_RGB;
+img_green = im2double(img_RGB);
+img_green(:,:,2) = img_green(:,:,2) + get(hObject, 'Value');
+axes(handles.axes1);
+imshow(img_green);
+
+
+% --- Executes during object creation, after setting all properties.
+function slider4_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to slider4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% --- Executes on slider movement.
+function slider5_Callback(hObject, eventdata, handles)
+global img_RGB;
+img_blue = im2double(img_RGB);
+img_blue(:,:,3) = img_blue(:,:,3) + get(hObject, 'Value');
+axes(handles.axes1);
+imshow(img_blue);
+
+
+% --- Executes during object creation, after setting all properties.
+function slider5_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to slider5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+
+function edit1_Callback(hObject, eventdata, handles)
+% hObject    handle to edit1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global angle;
+angle = get(handles.edit1, 'String');
+angle = str2num(angle);
+
+
+% --- Executes during object creation, after setting all properties.
+function edit1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in rotate button.
+function pushbutton13_Callback(hObject, eventdata, handles)
+global img angle;
+
+img_rot = imrotate(img,angle);
+axes(handles.axes1);
+imshow(img_rot);
+
+
+
+
+
+
+
+
+
+
