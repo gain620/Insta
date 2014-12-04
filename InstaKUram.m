@@ -86,7 +86,6 @@ if user_canceled
 end
 
 
-
 img = imread(loadPath);
 img2 = img;
 axes(handles.axes1);
@@ -164,9 +163,15 @@ function pushbutton8_Callback(hObject, eventdata, handles)
 % --- Executes on button press in reset image.
 function pushbutton9_Callback(hObject, eventdata, handles)
 % 이미지 원본으로 리셋
-global img2;
+global img2 pl stop_pl;
 axes(handles.axes1);
 imshow(img2);
+
+% 리셋 버튼 누르면, 카페베네 음악도 종료
+stop_pl = 1;
+stop (pl); % Stop mp3 playback
+tmpfile = ['temp.wav'];
+delete(tmpfile);
 
 
 % --- Executes on slider movement.
@@ -250,9 +255,20 @@ imshow(img_mosaic);
 
 % --- Executes on button press in caffebene filter.
 function pushbutton12_Callback(hObject, eventdata, handles)
-global img;
+global img pl stop_pl;
+stop_pl = 0;
+
+% 카페베네 필터효과
 img_bene = caffebene(img);
 axes(handles.axes1);
 imshow(img_bene);
+
+
+% 카페베네 음악 재생
+
+[Y, FS] = mp3read ('C:\Users\Administrator\Documents\MATLAB\NewInstaKUram\caffebeneSong.mp3');              % Decode selected mp3 file.
+
+pl = audioplayer (Y, FS);               % start playback.
+play (pl);
 
 
