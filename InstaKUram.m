@@ -56,6 +56,8 @@ function InstaKUram_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for InstaKUram
 handles.output = hObject;
+global mosaicCount;
+mosaicCount = 1;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -79,12 +81,7 @@ varargout{1} = handles.output;
 function pushbutton1_Callback(hObject, eventdata, handles)
 % 이미지 로드
 global img img2;
-[loadPath, user_canceled] = imgetfile();
-if user_canceled
-    msgbox(sprintf('No Image Selected!'),'Error','Error');
-    return
-end
-
+loadPath = imgetfile();
 
 img = imread(loadPath);
 img2 = img;
