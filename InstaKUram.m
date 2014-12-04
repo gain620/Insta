@@ -22,7 +22,7 @@ function varargout = InstaKUram(varargin)
 
 % Edit the above text to modify the response to help InstaKUram
 
-% Last Modified by GUIDE v2.5 04-Dec-2014 21:11:04
+% Last Modified by GUIDE v2.5 04-Dec-2014 23:08:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -56,6 +56,7 @@ function InstaKUram_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for InstaKUram
 handles.output = hObject;
+
 global mosaicCount;
 mosaicCount = 1;
 
@@ -265,5 +266,3 @@ imshow(img_bene);
 
 pl = audioplayer (Y, FS);               % start playback.
 play (pl);
-
-
