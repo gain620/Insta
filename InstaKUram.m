@@ -22,7 +22,7 @@ function varargout = InstaKUram(varargin)
 
 % Edit the above text to modify the response to help InstaKUram
 
-% Last Modified by GUIDE v2.5 05-Dec-2014 01:17:27
+% Last Modified by GUIDE v2.5 09-Dec-2014 18:49:26
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -272,18 +272,25 @@ function pushbutton12_Callback(hObject, eventdata, handles)
 global img pl stop_pl;
 stop_pl = 0;
 
-% 카페베네 필터효과
-img_bene = caffebene(img);
-axes(handles.axes1);
-imshow(img_bene);
-
-
 % 카페베네 음악 재생
 
 [Y, FS] = mp3read ('C:\Users\Administrator\Documents\MATLAB\NewInstaKUram\caffebeneSong.mp3');              % Decode selected mp3 file.
 
 pl = audioplayer (Y, FS);               % start playback.
 play (pl);
+
+
+fps=25;
+% 카페베네 필터효과
+for idx = 1:fps
+img_bene = caffebene(img,fps-idx);
+axes(handles.axes1);
+imshow(img_bene);
+pause(0.1);
+end
+
+
+
 
 
 % --- Executes on slider movement.
@@ -360,11 +367,41 @@ axes(handles.axes1);
 imshow(img_rot);
 
 
+% --- Executes on button press in pushbutton14.
+function pushbutton14_Callback(hObject, eventdata, handles)
+vidObj = mmreader('example.avi');
+
+nFrames = vidObj.NumberOfFrames;
+vidHeight = vidObj.Height;
+vidWidth = vidObj.Width;
+
+% Preallocate movie structure.
+mov(1:nFrames) = ...
+    struct('cdata', zeros(vidHeight, vidWidth, 3, 'uint8'),...
+           'colormap', []);
+
+% Read one frame at a time.
+for k = 1 : nFrames
+    mov(k).cdata = read(vidObj, k);
+end
+
+% Size a figure based on the video's width and height.
+global hf;
+hf = figure;
+set(hf, 'position', [150 150 vidWidth vidHeight])
+
+% Play back the movie once at the video's frame rate.
+%axes(handles.axes1);
+movie(hf,mov, 1, vidObj.FrameRate);
 
 
-
-
-
-
+% --- Executes on button press in pushbutton15.
+function pushbutton15_Callback(hObject, eventdata, handles)
+global hf;
+F = getframe(hf);
+cla;
+[X,map] = frame2im(F);
+figure
+imshow(X);
 
 
